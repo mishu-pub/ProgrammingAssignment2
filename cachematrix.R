@@ -1,58 +1,8 @@
-makeVector <- function(x = numeric()) {
-  m <- NULL
-  set <- function(y) {
-    x <<- y
-    m <<- NULL
-  }
-  get <- function() x
-  setmean <- function(mean) m <<- mean
-  getmean <- function() m
-  list(set = set, get = get,
-       setmean = setmean,
-       getmean = getmean)
-}
+## A couple of  functions that enable the caching of computation of the inverse of a matrix
 
 
-
-
-
-
-cachemean <- function(x, ...) {
-  m <- x$getmean()
-  if(!is.null(m)) {
-    message("getting cached data")
-    return(m)
-  }
-  data <- x$get()
-  m <- mean(data, ...)
-  x$setmean(m)
-  m
-}
-
-
-cachesolve <- function(x, ...) {
-  m <- x$getmean()
-  if(!is.null(m)) {
-    message("getting cached data")
-    return(m)
-  }
-  data <- x$get()
-  m <- mean(data, ...)
-  x$setmean(m)
-  m
-}
-
-
-
-
-
-
-
-
-## Put comments here that give an overall description of what your
-## functions do
-
-## Write a short comment describing this function
+## This function creates a special object matrix that can be cached
+## the cache is actually another enviroment
 
 makeCacheMatrix <- function(x = matrix()) {
   m <- NULL
@@ -69,7 +19,9 @@ makeCacheMatrix <- function(x = matrix()) {
 }
 
 
-## Write a short comment describing this function
+## this function takes as an argument the special cacheable matrix and computes the inverse
+## if inverse was not already computed it computes it and then caches it so that on further
+## calls it can be directly retrieved from the cache
 
 cacheSolve <- function(x, ...) {
         ## Return a matrix that is the inverse of 'x'
@@ -78,7 +30,7 @@ cacheSolve <- function(x, ...) {
     message("getting cached data")
     return(m)
   }
-  data <- x$solve()
+  data <- x$get()
   m <- solve(data, ...)
   x$setsolve(m)
   m
